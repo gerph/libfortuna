@@ -23,9 +23,11 @@ test command can be built with 'riscos-amu -f MakefileTest,fe1' and run with
 'riscos-run aif32.FortunaTest'.
 
 * The RISC OS C compiler reads #include "c.h" as the file 'h' in the
-  directory 'c', so the build links c.h at c/h, and the export also provides
-  it as Fortuna/c/h. Programs using the exported library therefore find it
-  through the include path, with no changes to the source files.
+  directory 'c', so the build links c.h at c/h, and the export provides it as
+  Fortuna/c/h so that the exported headers can include it. RISC OS code, and
+  code ported to it, should include "fortuna-c.h" (exported as
+  Fortuna/h/fortuna-c), which has a clear name. The source files are not
+  changed.
 * Entropy is read from the CryptRandom module. If that is not available, the
   library falls back to the timers and pointer state, which is a weak source.
 * On 32-bit systems, SHA-384 and SHA-512 use pairs of 32-bit values, as there

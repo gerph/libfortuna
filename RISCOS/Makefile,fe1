@@ -20,6 +20,7 @@ EXPORTS    = ${EXP_LIB}.${COMPONENT}.h.blf \
              ${EXP_LIB}.${COMPONENT}.h.fortuna \
              ${EXP_LIB}.${COMPONENT}.h.c \
              ${EXP_LIB}.${COMPONENT}.c.h \
+             ${EXP_LIB}.${COMPONENT}.h.fortuna-c \
              ${EXP_LIB}.${COMPONENT}.h.internal \
              ${EXP_LIB}.${COMPONENT}.h.md5 \
              ${EXP_LIB}.${COMPONENT}.h.px \
@@ -59,10 +60,15 @@ ${EXP_LIB}.${COMPONENT}.h.c: h.c
 	${CP} $?  $@  ${CPFLAGS}
 
 # The headers include "c.h", which the RISC OS C compiler reads as the file 'h'
-# in the directory 'c', not as the header h.c. So that clients which have this
-# library on their include path can still include it, export it there as well.
+# in the directory 'c', not as the header h.c. So that the exported headers can
+# still include it, export it there as well.
 ${EXP_LIB}.${COMPONENT}.c.h: h.c
 	${MKDIR} ${EXP_LIB}.${COMPONENT}.c
+	${CP} $?  $@  ${CPFLAGS}
+
+# RISC OS code, and code ported to it, should include "fortuna-c.h" instead of
+# "c.h", which has a clear name that the compiler can resolve.
+${EXP_LIB}.${COMPONENT}.h.fortuna-c: h.c
 	${CP} $?  $@  ${CPFLAGS}
 
 ${EXP_LIB}.${COMPONENT}.h.internal: h.internal
