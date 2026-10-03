@@ -1,0 +1,33 @@
+#!/usr/bin/env riscos-amu -f
+# Makefile for the Fortuna library test command
+#
+
+#
+# Program specific options:
+#
+COMPONENT  = FortunaTest
+
+# aif, for linked objects
+# aof, for a partially linked AOF object
+# util, for utilities built with objasm
+# basic, for BASIC tools
+TYPE       = aif
+
+# Comma-separated list of paths to use for includes, such as:
+#	C:LibName.
+INCLUDES   = C:Fortuna.
+
+# Space separated list of defines to set, eg -DDEBUG
+CDEFINES   =
+
+# The library formats debug messages with vsnprintf, which is not present in
+# the default (noc99) stubs, so the full C library stubs are needed.
+CLIBTYPE   = generic
+
+# Space separated list of libraries to link against, eg C:LibName.o.libLibName
+LIBS       = C:Fortuna.o.libFortuna ${CLIB}
+
+# Objects to build, using the format o.<name> (will be varied for build type)
+OBJS       = o.fortunatest
+
+include LibraryCommand

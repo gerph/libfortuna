@@ -1,0 +1,80 @@
+#!/usr/bin/env riscos-amu -f
+# Makefile for Fortuna
+#
+
+#
+# Program specific options:
+#
+COMPONENT  = Fortuna
+
+# Specifies additional targets for startup
+#INITTARGET = inittarget
+
+# Specifies additional targets for clean
+#CLEANTARGET = cleantarget
+
+# Files to export as part of export_hdr or export_libs
+# To export to the library in a subdirectory, use an export like:
+#   ${EXP_LIB}.${COMPONENT}.h.myheader
+EXPORTS    = ${EXP_LIB}.${COMPONENT}.h.blf \
+             ${EXP_LIB}.${COMPONENT}.h.fortuna \
+             ${EXP_LIB}.${COMPONENT}.h.fortuna_c \
+             ${EXP_LIB}.${COMPONENT}.h.internal \
+             ${EXP_LIB}.${COMPONENT}.h.md5 \
+             ${EXP_LIB}.${COMPONENT}.h.px \
+             ${EXP_LIB}.${COMPONENT}.h.rijndael \
+             ${EXP_LIB}.${COMPONENT}.h.sha1 \
+             ${EXP_LIB}.${COMPONENT}.h.sha2
+
+
+# Comma-separated list of paths to use for includes, such as:
+#	C:LibName.
+INCLUDES   =
+
+# Space separated list of defines to set, eg -DDEBUG
+CDEFINES   =
+
+# Objects to build, using the format o.<name> (will be varied for build type)
+OBJS       = o.blf \
+             o.fortuna \
+             o.internal \
+             o.md5 \
+             o.px \
+             o.random \
+             o.rijndael \
+             o.sha1 \
+             o.sha2 \
+
+include LibExport
+
+# Export rules
+${EXP_LIB}.${COMPONENT}.h.blf: h.blf
+	${CP} $?  $@  ${CPFLAGS}
+
+${EXP_LIB}.${COMPONENT}.h.fortuna: h.fortuna
+	${CP} $?  $@  ${CPFLAGS}
+
+${EXP_LIB}.${COMPONENT}.h.fortuna_c: h.fortuna_c
+	${CP} $?  $@  ${CPFLAGS}
+
+${EXP_LIB}.${COMPONENT}.h.internal: h.internal
+	${CP} $?  $@  ${CPFLAGS}
+
+${EXP_LIB}.${COMPONENT}.h.md5: h.md5
+	${CP} $?  $@  ${CPFLAGS}
+
+${EXP_LIB}.${COMPONENT}.h.px: h.px
+	${CP} $?  $@  ${CPFLAGS}
+
+${EXP_LIB}.${COMPONENT}.h.rijndael: h.rijndael
+	${CP} $?  $@  ${CPFLAGS}
+
+${EXP_LIB}.${COMPONENT}.h.sha1: h.sha1
+	${CP} $?  $@  ${CPFLAGS}
+
+${EXP_LIB}.${COMPONENT}.h.sha2: h.sha2
+	${CP} $?  $@  ${CPFLAGS}
+
+
+#---------------------------------------------------------------------------
+# Dynamic dependencies:

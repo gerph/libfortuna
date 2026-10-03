@@ -1,0 +1,175 @@
+/*
+ * Test of the hash functions and random number source in the Fortuna library.
+ *
+ * Each digest is checked for the message "abc", and for a 300 byte message
+ * which is fed in as several updates of differing sizes, so that the block
+ * buffering is exercised. Reference digests were generated with Python's
+ * hashlib.
+ */
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+#include "fortuna_c.h"
+#include "md5.h"
+#include "sha1.h"
+#include "sha2.h"
+#include "px.h"
+
+static int failures = 0;
+static int tests = 0;
+
+static const struct
+{
+	const char *name;
+	const char *abc;
+	const char *pattern;
+} vectors[] = {
+	{ "md5", "900150983cd24fb0d6963f7d28e17f72", "17b3839204f7b81a93eb2718b1379e6f" },
+	{ "sha1", "a9993e364706816aba3e25717850c26c9cd0d89d", "bf77ecf143ceb21f1676c34b8d89c8bb3c43cc4e" },
+	{ "sha224", "23097d223405d8228642a477bda255b32aadbce4bda0b3f7e36c9da7", "0c82e586f274c06fe5393d20f3692908d3a78ff0034e4c221959f75a" },
+	{ "sha256", "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad", "7728ae2f2c36e2aaafbe79ca14c87ae2f89e7c88c4390ecbbf82dce88706958d" },
+	{ "sha384", "cb00753f45a35e8bb5a03d699ac65007272c32ab0eded1631a8b605a43ff5bed8086072ba1e7cc2358baeca134c825a7", "69672aca50c4279e4cdf788380294d7655bc68c7949e273318d60817f3262cff54e8c78ceaae0853e0a7adf36f392d38" },
+	{ "sha512", "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f", "f1dca2eb677b303265b0b9baff0e061202818f35c1470a69bbaa9bb66025e948d90e565e69642506c6213aef3cf9e929357a59da263deb34d1236dbdcda279b3" },
+};
+
+static void tohex(const uint8 *d, int len, char *out)
+{
+	static const char digits[] = "0123456789abcdef";
+	int i;
+
+	for (i = 0; i < len; i++)
+	{
+		out[i * 2] = digits[d[i] >> 4];
+		out[i * 2 + 1] = digits[d[i] & 15];
+	}
+	out[len * 2] = '\0';
+}
+
+static void check(const char *name, const char *what, const uint8 *d, int len, const char *expect)
+{
+	char hex[SHA512_DIGEST_STRING_LENGTH];
+
+	tohex(d, len, hex);
+	tests++;
+	if (strcmp(hex, expect) != 0)
+	{
+		failures++;
+		printf("FAIL %s %s\n  got      %s\n  expected %s\n", name, what, hex, expect);
+	}
+	else
+		printf("ok   %s %s\n", name, what);
+}
+
+/* Feed the message as a number of uneven updates */
+#define DIGEST(ctx, init, update, final, len, msg, msglen, out) \
+	do { \
+		init(&ctx); \
+		if ((msglen) == 3) \
+			update(&ctx, (msg), 3); \
+		else \
+		{ \
+			update(&ctx, (msg), 7); \
+			update(&ctx, (msg) + 7, 150); \
+			update(&ctx, (msg) + 157, (msglen) - 157); \
+		} \
+		final; \
+	} while (0)
+
+static void run(const char *name, const uint8 *msg, int msglen, const char *what, const char *expect)
+{
+	uint8 out[SHA512_DIGEST_LENGTH];
+	int len = 0;
+
+	if (strcmp(name, "md5") == 0)
+	{
+		MD5_CTX c;
+		DIGEST(c, MD5Init, MD5Update, MD5Final(out, &c), 16, msg, msglen, out);
+		len = 16;
+	}
+	else if (strcmp(name, "sha1") == 0)
+	{
+		SHA1_CTX c;
+		DIGEST(c, SHA1Init, SHA1Update, SHA1Final(out, &c), 20, msg, msglen, out);
+		len = 20;
+	}
+	else if (strcmp(name, "sha224") == 0)
+	{
+		SHA224_CTX c;
+		DIGEST(c, SHA224_Init, SHA224_Update, SHA224_Final(out, &c), 28, msg, msglen, out);
+		len = 28;
+	}
+	else if (strcmp(name, "sha256") == 0)
+	{
+		SHA256_CTX c;
+		DIGEST(c, SHA256_Init, SHA256_Update, SHA256_Final(out, &c), 32, msg, msglen, out);
+		len = 32;
+	}
+	else if (strcmp(name, "sha384") == 0)
+	{
+		SHA384_CTX c;
+		DIGEST(c, SHA384_Init, SHA384_Update, SHA384_Final(out, &c), 48, msg, msglen, out);
+		len = 48;
+	}
+	else
+	{
+		SHA512_CTX c;
+		DIGEST(c, SHA512_Init, SHA512_Update, SHA512_Final(out, &c), 64, msg, msglen, out);
+		len = 64;
+	}
+	check(name, what, out, len, expect);
+}
+
+static void test_random(void)
+{
+	uint8 a[32];
+	uint8 b[32];
+	uint8 zero[32];
+	uint8 seed[1024];
+	unsigned n;
+
+	memset(zero, 0, sizeof(zero));
+	memset(a, 0, sizeof(a));
+	memset(b, 0, sizeof(b));
+
+	n = px_acquire_system_randomness(seed);
+	tests++;
+	if (n == 0)
+	{
+		failures++;
+		printf("FAIL random: no system randomness was available\n");
+	}
+	else
+		printf("ok   random: %u bytes of system randomness\n", n);
+
+	px_get_random_bytes(a, sizeof(a));
+	px_get_random_bytes(b, sizeof(b));
+	tests++;
+	if (memcmp(a, zero, sizeof(a)) == 0 || memcmp(a, b, sizeof(a)) == 0)
+	{
+		failures++;
+		printf("FAIL random: output was zero or repeated\n");
+	}
+	else
+		printf("ok   random: successive outputs differ\n");
+}
+
+int main(void)
+{
+	uint8 pattern[300];
+	unsigned i;
+
+	for (i = 0; i < sizeof(pattern); i++)
+		pattern[i] = (uint8) i;
+
+	for (i = 0; i < sizeof(vectors) / sizeof(vectors[0]); i++)
+	{
+		run(vectors[i].name, (const uint8 *) "abc", 3, "abc", vectors[i].abc);
+		run(vectors[i].name, pattern, 300, "300 bytes in updates", vectors[i].pattern);
+	}
+	test_random();
+
+	printf("%d tests, %d failures\n", tests, failures);
+	return failures ? 1 : 0;
+}
