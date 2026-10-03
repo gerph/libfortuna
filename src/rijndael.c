@@ -79,12 +79,7 @@ void gen_tabs(void);
 
 #ifdef PRE_CALC_TABLES
 
-#ifdef __riscos
-/* The .tbl suffix cannot be resolved by the RISC OS C compiler; use a header */
-#include "rijndael_tbl.h"
-#else
 #include "rijndael.tbl"
-#endif
 #define tab_gen		1
 #else							/* !PRE_CALC_TABLES */
 
