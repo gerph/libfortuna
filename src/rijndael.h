@@ -20,7 +20,7 @@
 #ifndef _RIJNDAEL_H_
 #define _RIJNDAEL_H_
 
-#include "fortuna_c.h"
+#include "c.h"
 
 /* 1. Standard types for AES cryptography source code				*/
 

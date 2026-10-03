@@ -38,7 +38,7 @@
 #ifndef _SHA2_H
 #define _SHA2_H
 
-#include "fortuna_c.h"
+#include "c.h"
 
 /* avoid conflict with OpenSSL */
 #define SHA256_Init pg_SHA256_Init

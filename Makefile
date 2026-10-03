@@ -23,7 +23,7 @@ install:
 	$(INSTALL) -m 644 ./src/px.h $(PREFIX)/include/fortuna/
 	$(INSTALL) -m 644 ./src/rijndael.h $(PREFIX)/include/fortuna/
 	$(INSTALL) -m 644 ./src/sha2.h $(PREFIX)/include/fortuna/
-	$(INSTALL) -m 644 ./src/fortuna_c.h $(PREFIX)/include/fortuna/
+	$(INSTALL) -m 644 ./src/c.h $(PREFIX)/include/fortuna/
 	$(INSTALL) -m 644 ./src/blf.h $(PREFIX)/include/fortuna/
 	$(INSTALL) -m 644 ./src/sha1.h $(PREFIX)/include/fortuna/
 	$(INSTALL) -m 644 ./src/internal.h $(PREFIX)/include/fortuna/

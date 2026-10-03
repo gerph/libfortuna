@@ -31,7 +31,7 @@
 
 #include <errno.h>
 #include <time.h>
-#include "fortuna_c.h"
+#include "c.h"
 #include "px.h"
 
 /* how many bytes to ask from system random provider */

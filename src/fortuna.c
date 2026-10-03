@@ -37,7 +37,7 @@
 #endif
 #include <time.h>
 
-#include "fortuna_c.h"
+#include "c.h"
 #include "rijndael.h"
 #include "sha2.h"
 #include "fortuna.h"

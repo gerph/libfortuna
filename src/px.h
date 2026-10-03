@@ -38,7 +38,7 @@
 #include <sys/param.h>
 #include <malloc_np.h>
 #endif
-#include "fortuna_c.h"
+#include "c.h"
 
 #ifdef __riscos
 /* The RISC OS C library does not provide strcasecmp */

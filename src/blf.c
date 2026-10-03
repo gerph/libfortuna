@@ -40,7 +40,7 @@
 
 #include <assert.h>
 
-#include "fortuna_c.h"
+#include "c.h"
 #include "blf.h"
 
 #define GET_32BIT_MSB_FIRST(p) ( \

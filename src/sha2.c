@@ -40,11 +40,11 @@
 #include <sys/param.h>
 #endif
 
-#include "fortuna_c.h"
+#include "c.h"
 #include "sha2.h"
 
 
-/* Types come from fortuna_c.h; a 64-bit word may be a hi/lo pair of 32-bit values */
+/* Types come from c.h; a 64-bit word may be a hi/lo pair of 32-bit values */
 typedef uint8 sha2_byte;			/* Exactly 1 byte */
 typedef uint32 sha2_word32;			/* Exactly 4 bytes */
 typedef fortuna_uint64 sha2_word64;	/* Exactly 8 bytes */

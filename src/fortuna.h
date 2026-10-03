@@ -32,7 +32,7 @@
 #ifndef __FORTUNA_H
 #define __FORTUNA_H
 
-#include "fortuna_c.h"
+#include "c.h"
 
 void		fortuna_get_bytes(unsigned len, uint8 *dst);
 void		fortuna_add_entropy(const uint8 *data, unsigned len);

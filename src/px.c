@@ -29,7 +29,7 @@
  * contrib/pgcrypto/px.c
  */
 
-#include "fortuna_c.h"
+#include "c.h"
 #include "px.h"
 
 struct error_desc

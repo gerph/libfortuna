@@ -34,7 +34,7 @@
 #ifndef __riscos
 #include <sys/param.h>
 #endif
-#include "fortuna_c.h"
+#include "c.h"
 #include "md5.h"
 
 #define SHIFT(X, s) (((X) << (s)) | ((X) >> (32 - (s))))

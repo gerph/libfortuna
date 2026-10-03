@@ -42,7 +42,7 @@
 #endif
 #include <string.h>
 
-#include "fortuna_c.h"
+#include "c.h"
 #include "sha1.h"
 
 /* constant table */
