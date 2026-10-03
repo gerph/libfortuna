@@ -38,7 +38,7 @@
 #ifndef _SHA2_H
 #define _SHA2_H
 
-#include "c.h"
+#include "fortuna_c.h"
 
 /* avoid conflict with OpenSSL */
 #define SHA256_Init pg_SHA256_Init
@@ -70,13 +70,13 @@
 typedef struct _SHA256_CTX
 {
 	uint32		state[8];
-	uint64		bitcount;
+	fortuna_uint64	bitcount;
 	uint8		buffer[SHA256_BLOCK_LENGTH];
 } SHA256_CTX;
 typedef struct _SHA512_CTX
 {
-	uint64		state[8];
-	uint64		bitcount[2];
+	fortuna_uint64	state[8];
+	fortuna_uint64	bitcount[2];
 	uint8		buffer[SHA512_BLOCK_LENGTH];
 } SHA512_CTX;
 

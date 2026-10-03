@@ -40,7 +40,7 @@
 
 #include <assert.h>
 
-#include "c.h"
+#include "fortuna_c.h"
 #include "blf.h"
 
 #define GET_32BIT_MSB_FIRST(p) ( \
@@ -249,7 +249,11 @@ const uint32 sbox3[] = {
 
 #define Fprime(a,b,c,d) ( ( (S0[a] + S1[b]) ^ S2[c] ) + S3[d] )
 #define F(x) Fprime( ((x>>24)&0xFF), ((x>>16)&0xFF), ((x>>8)&0xFF), (x&0xFF) )
-#define ROUND(n) ( xL ^= P[n], t = xL, xL = F(xL) ^ xR, xR = t )
+/*
+ * This is written as separate statements, not a single comma expression, as
+ * the latter takes exponentially long to compile with the Norcroft compiler.
+ */
+#define ROUND(n) do { xL ^= P[n]; t = xL; xL = F(t) ^ xR; xR = t; } while (0)
 
 void
 blowfish_encrypt(uint32 xL, uint32 xR, uint32 *output,

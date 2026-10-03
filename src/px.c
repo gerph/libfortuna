@@ -29,7 +29,7 @@
  * contrib/pgcrypto/px.c
  */
 
-#include "c.h"
+#include "fortuna_c.h"
 #include "px.h"
 
 struct error_desc
@@ -103,6 +103,21 @@ px_strerror(int err)
 	return "Bad error code";
 }
 
+
+#ifdef __riscos
+#include <ctype.h>
+
+int
+strcasecmp(const char *a, const char *b)
+{
+	while (*a != '\0' && tolower((unsigned char) *a) == tolower((unsigned char) *b))
+	{
+		a++;
+		b++;
+	}
+	return tolower((unsigned char) *a) - tolower((unsigned char) *b);
+}
+#endif
 
 const char *
 px_resolve_alias(const PX_Alias *list, const char *name)

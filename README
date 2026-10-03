@@ -12,3 +12,21 @@ Waitman Gobble <waitman@waitman.net> 2013-07-12
 Documentation and more information at the following URL:
 http://www.crxwg.com/fortuna/bin/libfortuna.html
 
+
+RISC OS
+-------
+
+The library can be built as an exported library for RISC OS (32-bit and
+64-bit). Build it from the RISCOS directory with 'riscos-amu export'; this
+produces the headers and library as Fortuna in the exported libraries. The
+test command can be built with 'riscos-amu -f MakefileTest,fe1' and run with
+'riscos-run aif32.FortunaTest'.
+
+* The header 'c.h' is named 'fortuna_c.h', as the RISC OS C compiler cannot
+  include a file called 'c.h'.
+* Entropy is read from the CryptRandom module. If that is not available, the
+  library falls back to the timers and pointer state, which is a weak source.
+* On 32-bit systems, SHA-384 and SHA-512 use pairs of 32-bit values, as there
+  is no 64-bit integer type.
+* The library uses vsnprintf, which is not in the default (noc99) C library
+  stubs. Programs which link against the library must set CLIBTYPE = generic.

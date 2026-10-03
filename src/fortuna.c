@@ -29,10 +29,15 @@
  * contrib/pgcrypto/fortuna.c
  */
 
+#ifdef __riscos
+#include "kernel.h"
+#include "swis.h"
+#else
 #include <sys/time.h>
+#endif
 #include <time.h>
 
-#include "c.h"
+#include "fortuna_c.h"
 #include "rijndael.h"
 #include "sha2.h"
 #include "fortuna.h"
@@ -112,6 +117,28 @@
 /* for internal wrappers */
 #define MD_CTX			SHA256_CTX
 #define CIPH_CTX		rijndael_ctx
+
+#ifdef __riscos
+/*
+ * RISC OS has no gettimeofday, so we derive the time from the monotonic
+ * timer, which counts centiseconds. Only differences are ever compared.
+ */
+struct timeval
+{
+	long		tv_sec;
+	long		tv_usec;
+};
+
+static void
+gettimeofday(struct timeval *tv, void *tz)
+{
+	long		cs = 0;
+
+	_swix(OS_ReadMonotonicTime, _OUT(0), &cs);
+	tv->tv_sec = cs / 100L;
+	tv->tv_usec = (cs % 100L) * 10000L;
+}
+#endif
 
 struct fortuna_state
 {

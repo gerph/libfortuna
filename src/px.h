@@ -33,10 +33,17 @@
 #define __PX_H
 
 #include <stdlib.h>
+#ifndef __riscos
 #include <sys/types.h>
 #include <sys/param.h>
 #include <malloc_np.h>
-#include "c.h"
+#endif
+#include "fortuna_c.h"
+
+#ifdef __riscos
+/* The RISC OS C library does not provide strcasecmp */
+int			strcasecmp(const char *a, const char *b);
+#endif
 
 /* keep debug messages? */
 #define PX_DEBUG

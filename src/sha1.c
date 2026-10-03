@@ -37,10 +37,12 @@
  */
 
 
+#ifndef __riscos
 #include <sys/param.h>
+#endif
 #include <string.h>
 
-#include "c.h"
+#include "fortuna_c.h"
 #include "sha1.h"
 
 /* constant table */
@@ -65,7 +67,7 @@ do { \
 	ctxt->m.b8[(COUNT % 64)] = (x);		\
 	COUNT++;				\
 	COUNT %= 64;				\
-	ctxt->c.b64[0] += 8;			\
+	FORTUNA_CTR_ADD(ctxt->c.b64, 1);		\
 	if (COUNT % 64 == 0)			\
 		sha1_step(ctxt);		\
 } while (0)
@@ -301,7 +303,7 @@ sha1_loop(struct sha1_ctxt * ctxt, const uint8 *input0, size_t len)
 		memmove(&ctxt->m.b8[gapstart], &input[off], copysiz);
 		COUNT += copysiz;
 		COUNT %= 64;
-		ctxt->c.b64[0] += copysiz * 8;
+		FORTUNA_CTR_ADD(ctxt->c.b64, copysiz);
 		if (COUNT % 64 == 0)
 			sha1_step(ctxt);
 		off += copysiz;

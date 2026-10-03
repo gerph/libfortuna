@@ -51,7 +51,7 @@ typedef struct
 
 	union
 	{
-		uint64		md5_count64;
+		fortuna_ctr64	md5_count64;
 		uint8		md5_count8[8];
 	}			md5_count;
 #define md5_n	md5_count.md5_count64

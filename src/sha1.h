@@ -48,7 +48,7 @@ struct sha1_ctxt
 	union
 	{
 		uint8		b8[8];
-		uint64		b64[1];
+		fortuna_ctr64	b64;
 	}			c;
 	union
 	{

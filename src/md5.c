@@ -31,8 +31,10 @@
  * contrib/pgcrypto/md5.c
  */
 
+#ifndef __riscos
 #include <sys/param.h>
-#include "c.h"
+#endif
+#include "fortuna_c.h"
 #include "md5.h"
 
 #define SHIFT(X, s) (((X) << (s)) | ((X) >> (32 - (s))))
@@ -135,7 +137,7 @@ static void md5_calc(uint8 *, md5_ctxt *);
 void
 md5_init(md5_ctxt *ctxt)
 {
-	ctxt->md5_n = 0;
+	memset(ctxt->md5_n, 0, sizeof(ctxt->md5_n));
 	ctxt->md5_i = 0;
 	ctxt->md5_sta = MD5_A0;
 	ctxt->md5_stb = MD5_B0;
@@ -150,7 +152,7 @@ md5_loop(md5_ctxt *ctxt, const uint8 *input, unsigned len)
 	unsigned int gap,
 				i;
 
-	ctxt->md5_n += len * 8;		/* byte to bit */
+	FORTUNA_CTR_ADD(ctxt->md5_n, len);		/* byte to bit */
 	gap = MD5_BUFLEN - ctxt->md5_i;
 
 	if (len >= gap)

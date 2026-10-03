@@ -33,7 +33,9 @@
 #define __INTERNAL_H
 
 #include <stdlib.h>
+#ifndef __riscos
 #include <malloc_np.h>
+#endif
 #include <time.h>
 
 #include "px.h"
